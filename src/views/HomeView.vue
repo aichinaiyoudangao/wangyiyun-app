@@ -1,7 +1,6 @@
 <template>
   <!-- 组件化 -->
   <div>
-    11
     <TopNav />
     <SwiperTop />
     <IconList />
