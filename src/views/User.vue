@@ -1,11 +1,11 @@
 <template>
   <div class="User">
-    <img :src="user.data.profile.backgroundUrl" alt="" class="bgimg">
+    <img v-lazy="user.data.profile.backgroundUrl" alt="" class="bgimg">
     <svg class="icon" aria-hidden="true" @click="$router.push('/')">
       <use xlink:href="#icon-zuojiantou"></use>
     </svg>
     <div class="User1">
-      <img :src="user.data.profile.avatarUrl" alt="" class="headphoto">
+      <img v-lazy="user.data.profile.avatarUrl" alt="" class="headphoto">
       <span>{{user.data.profile.nickname}}</span>
       <div class="info">
         <span>{{user.data.profile.follows}} 关注</span>

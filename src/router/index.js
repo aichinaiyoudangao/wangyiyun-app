@@ -7,6 +7,7 @@ const routes = [
     name: 'home',
     component: HomeView
   },
+  // 指定webpackChunkName，每个组件打包成一个js文件
   {
     path: '/itemMusic',
     name: 'itemMusic',
@@ -36,12 +37,9 @@ const routes = [
     name: 'User',
     // 独享路由守卫
     beforeEnter: async (to, from, next) => {
-      if (store.state.isLogin || store.state.token) {
+      if (store.state.isLogin || store.state.token || localStorage.getItem('token')) {
         next()
-      } else if (localStorage.getItem('token')) {
-        next()
-      }
-      else {
+      } else {
         next('/Login')
       }
     },

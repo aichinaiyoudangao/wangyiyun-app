@@ -1,6 +1,6 @@
 <template>
   <div class="musicDetail">
-    <img :src="playlist[playlistIndex].al.picUrl" alt="" class="bgimg">
+    <img v-lazy="playlist[playlistIndex].al.picUrl" alt="" class="bgimg">
     <div class="musicDetailTop">
       <div class="top_left">
         <svg class="icon" aria-hidden="true" @click="updateDetailShow();isLyricShow=false">
@@ -28,7 +28,7 @@
       <img src="@/assets/needle.png" alt="" class="needle" :class="{needle_active:!isPause}">
       <img src="@/assets/cd.png" alt="" class="cd">
       <!-- 图片绕z轴转动 -->
-      <img :src="playlist[playlistIndex].al.picUrl" alt="" @click="change" class="picUrl" :class="!isPause?'picUrl_running':'picUrl_paused'">
+      <img v-lazy="playlist[playlistIndex].al.picUrl" alt="" @click="change" class="picUrl" :class="!isPause?'picUrl_running':'picUrl_paused'">
     </div>
     <!-- 歌词 -->
     <div class="musicLyric" ref="musicLyric" v-show="isLyricShow" @click="change">

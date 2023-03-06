@@ -9,7 +9,8 @@
         <van-swipe-item v-for="item in state.musicList" :key="item">
           <!-- 歌单路由跳转并携带参数，会解析成a标签 -->
           <router-link :to="{path:'itemMusic',query:{id:item.id}}">
-            <img :src="item.picUrl" alt="">
+            <img v-lazy="item.picUrl" alt="">
+            <!-- <img :src="item.picUrl" alt=""> -->
             <span class="playCount">
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-play"></use>

@@ -10,14 +10,15 @@
     <!-- 历史记录 -->
     <div class="searchHistory">
       <span class="history">历史</span>
-      <span v-for="(item,i) in keyList" :key=i class="keyword" @click="search(item)">{{item}}</span>
-      <!-- 删除 -->
+      <!-- 搜索的历史记录 -->
+      <span v-for="(item,i) in keyList" :key=i class="keyword" @click="searchinput(item)">{{item}}</span>
+      <!-- 删除 logo-->
       <svg class="icon" aria-hidden="true" @click="delHistory">
         <use xlink:href="#icon-shanchu"></use>
       </svg>
     </div>
-    <div class="itemListContent">
-      <div class="itemListContent_item" v-for="(item,index) in searchList" :key="index">
+    <RecycleScroller class="scroller" :items="searchList" :item-size="65" key-field="id" v-slot="{ item,index }">
+      <div class="user">
         <!-- 左边 -->
         <div class="itemListContent_Litem" @click="updateindex(item)">
           <span class="leftindex">{{index+1}}</span>
@@ -39,12 +40,15 @@
           </svg>
         </div>
       </div>
-    </div>
+    </RecycleScroller>
   </div>
 </template>
 <script>
 import { getSearchMusic } from "@/request/api/home";
+import { _throttle } from "@/util/throttle.js";
+import { _debounce } from "@/util/debounce.js";
 import { mapMutations } from "vuex";
+
 export default {
   data() {
     return {
@@ -80,11 +84,19 @@ export default {
       localStorage.removeItem("keyList");
       this.keyList = [];
     },
-    async search(item) {
+    // 歌曲的搜索
+    // async search(item) {
+    //   let res = await getSearchMusic(item);
+    //   console.log(res);
+    //   this.searchList = res.data.result.songs;
+    // },
+    // 点击历史记录查询 防抖
+    searchinput: _throttle(async function (item) {
       let res = await getSearchMusic(item);
       console.log(res);
       this.searchList = res.data.result.songs;
-    },
+      console.log(this.searchList);
+    }, 300),
     updateindex(item) {
       item.al = item.album;
       item.al.picUrl = item.album.artist.img1v1Url;
@@ -117,6 +129,7 @@ export default {
     width: 100%;
     padding: 0.1rem 0.2rem;
     position: relative;
+    margin-bottom: 0.2rem;
     .history {
       font-size: 0.35rem;
       font-weight: 700;
@@ -137,6 +150,65 @@ export default {
       top: 0.25rem;
     }
   }
+  .scroller {
+    height: 10.4rem;
+    .user {
+      height: 1.3rem;
+      padding: 0 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .itemListContent_Litem {
+        width: 85%;
+        height: 100%;
+        display: flex;
+        // justify-content: space-between;
+        align-items: center;
+        // 序号
+        .leftindex {
+          font-size: 0.32rem;
+          display: inline-block;
+          width: 0.5rem;
+          // text-align: center;
+        }
+        div {
+          p {
+            overflow: hidden;
+            // 规定文本不进行换行
+            white-space: nowrap;
+            // text-overflow 属性规定当文本溢出包含元素时发生的事情。ellipsis 表示显示省略符号来代表被修剪的文本。
+            text-overflow: ellipsis;
+            width: 4rem;
+            height: 0.4rem;
+            font-weight: 700;
+          }
+          span {
+            font-size: 0.16rem;
+            color: gray;
+          }
+        }
+      }
+      .itemListContent_Ritem {
+        width: 18%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        position: relative;
+        .bofang {
+          position: absolute;
+          left: 0;
+        }
+        .liebiao {
+          position: absolute;
+          right: 0;
+        }
+        .icon {
+          fill: grey;
+        }
+      }
+    }
+  }
+
   .itemListContent {
     width: 100%;
     // height: 1rem;

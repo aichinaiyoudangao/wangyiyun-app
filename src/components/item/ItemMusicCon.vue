@@ -1,10 +1,10 @@
 <template>
   <div class="itemMusicTop">
-    <img :src="playlist.coverImgUrl" alt="" class="pic">
+    <img v-lazy="playlist.coverImgUrl" alt="" class="pic">
     <!-- 歌单详情信息 -->
     <div class="itemContent">
       <div class="itemContent_left">
-        <img :src="playlist.coverImgUrl" alt="" class="sPic">
+        <img v-lazy="playlist.coverImgUrl" alt="" class="sPic">
       </div>
       <div class="itemcontent_right">
         <span>{{playlist.name}}</span>

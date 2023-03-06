@@ -1,9 +1,9 @@
 <template>
-<!-- vant组件库 -->
+  <!-- vant组件库 -->
   <div id="swiperTop">
     <van-swipe :autoplay="3000" lazy-render>
       <van-swipe-item v-for="image in state.images" :key="image">
-        <img :src="image.pic" />
+        <img v-lazy="image.pic" />
       </van-swipe-item>
     </van-swipe>
   </div>

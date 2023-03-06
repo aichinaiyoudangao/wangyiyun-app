@@ -1,7 +1,7 @@
 <template>
   <div class="FooterMusic">
     <div class="footerLeft" @click="updateDetailShow">
-      <img :src="playlist[playlistIndex].al.picUrl" alt="">
+      <img v-lazy="playlist[playlistIndex].al.picUrl" alt="">
       <div>
         <p>{{ playlist[playlistIndex].name}}</p>
         <span @click="updateDetailShow">横划切歌</span>
