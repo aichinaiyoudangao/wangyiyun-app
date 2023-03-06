@@ -5,12 +5,12 @@
       <div class="more">查看更多</div>
     </div>
     <div class="musicContent">
-      <van-swipe :loop="false" :width="130" class="my-swiper" :show-indicators="false">
+      <!-- 自定义滑块大小 指示器false-->
+      <van-swipe :loop="false" :width="140" class="my-swiper" :show-indicators="false">
         <van-swipe-item v-for="item in state.musicList" :key="item">
           <!-- 歌单路由跳转并携带参数，会解析成a标签 -->
           <router-link :to="{path:'itemMusic',query:{id:item.id}}">
             <img v-lazy="item.picUrl" alt="">
-            <!-- <img :src="item.picUrl" alt=""> -->
             <span class="playCount">
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-play"></use>
@@ -109,7 +109,8 @@ export default {
       height: 100%;
       .van-swipe-item {
         position: relative;
-        margin-right: 10px;
+        padding-right: 0.2rem;
+        // margin-right: 0.2rem;
         img {
           width: 100%;
           height: 2.6rem;

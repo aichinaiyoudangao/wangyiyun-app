@@ -25,7 +25,7 @@ export function getVideo () {
 export function getMusicList () {
   return service({
     method: "GET",
-    url: "/personalized?limit=100"
+    url: "/personalized?limit=10"
   })
 }
 // 搜索
