@@ -56,7 +56,7 @@
       </div>
       <!-- 进度条 -->
       <div class="footer_content">
-        <input type="range" class="range" min='0' :max="duration" v-model="currentTime" step="0.05">
+        <input type="range" class="range" v-model="currentTime" min='0' :max="duration" step="0.05">
       </div>
       <div class="footer_bottom">
         <svg class="icon" aria-hidden="true">

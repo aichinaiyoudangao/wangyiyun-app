@@ -5,63 +5,89 @@
       <svg class="icon" aria-hidden="true" @click="$router.go(-1)">
         <use xlink:href="#icon-zuojiantou"></use>
       </svg>
-      <input type="text" placeholder="于文文" v-model="searchKey" @keydown.enter="saveKey">
+      <input ref="input" type="text" placeholder="于文文" v-model="searchKey" @keydown.enter="saveKey" @input="inputFn($event)" @focus="zhix" @blur="zhix1">
     </div>
-    <!-- 历史记录 -->
-    <div class="searchHistory">
-      <span class="history">历史</span>
-      <!-- 搜索的历史记录 -->
-      <span v-for="(item,i) in keyList" :key=i class="keyword" @click="searchinput(item)">{{item}}</span>
-      <!-- 删除 logo-->
-      <svg class="icon" aria-hidden="true" @click="delHistory">
-        <use xlink:href="#icon-shanchu"></use>
-      </svg>
+    <div v-show="suggestShow" class="searchKeyShow">
+      <div v-for="(item,key) in keySuggest" :key="key" class="suggest" @mousedown="searchSuggest(item.keyword)">
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-sousuo"></use>
+        </svg>
+        {{item.keyword}}
+      </div>
     </div>
-    <RecycleScroller class="scroller" :items="searchList" :item-size="65" key-field="id" v-slot="{ item,index }">
-      <div class="user">
-        <!-- 左边 -->
-        <div class="itemListContent_Litem" @click="updateindex(item)">
-          <span class="leftindex">{{index+1}}</span>
-          <div>
-            <p>{{item.name}}</p>
-            <span v-for="(item1,index1) in item.artists" :key="index1">
-              {{item1.name}}
-            </span>
+    <div v-show="!suggestShow">
+      <!-- 历史记录 -->
+      <div class="searchHistory">
+        <span class="history">历史</span>
+        <!-- 搜索的历史记录 -->
+        <span v-for="(item,i) in keyList" :key=i class="keyword" @click="searchinput(item)">{{item}}</span>
+        <!-- 删除 logo-->
+        <svg class="icon" aria-hidden="true" @click="delHistory">
+          <use xlink:href="#icon-shanchu"></use>
+        </svg>
+      </div>
+      <RecycleScroller class="scroller" :items="searchList" :item-size="65" key-field="id" v-slot="{ item,index }">
+        <div class="user">
+          <!-- 左边 -->
+          <div class="itemListContent_Litem" @click="updateindex(item)">
+            <span class="leftindex">{{index+1}}</span>
+            <div>
+              <p>{{item.name}}</p>
+              <span v-for="(item1,index1) in item.artists" :key="index1">
+                {{item1.name}}
+              </span>
+            </div>
+          </div>
+          <!-- 右边 -->
+          <div class="itemListContent_Ritem">
+            <!-- 是否有mv -->
+            <svg class="icon bofang" aria-hidden="true" v-if="item.mvid!=0">
+              <use xlink:href="#icon-24gl-playSquare"></use>
+            </svg>
+            <svg class="icon liebiao" aria-hidden="true">
+              <use xlink:href="#icon-danlieliebiao"></use>
+            </svg>
           </div>
         </div>
-        <!-- 右边 -->
-        <div class="itemListContent_Ritem">
-          <!-- 是否有mv -->
-          <svg class="icon bofang" aria-hidden="true" v-if="item.mvid!=0">
-            <use xlink:href="#icon-24gl-playSquare"></use>
-          </svg>
-          <svg class="icon liebiao" aria-hidden="true">
-            <use xlink:href="#icon-danlieliebiao"></use>
-          </svg>
-        </div>
-      </div>
-    </RecycleScroller>
+      </RecycleScroller>
+    </div>
+
   </div>
 </template>
 <script>
-import { getSearchMusic } from "@/request/api/home";
-import { _throttle } from "@/util/throttle.js";
+import { getSearchMusic, getSearchSuggest } from "@/request/api/home";
 import { _debounce } from "@/util/debounce.js";
+import { _throttle } from "@/util/throttle.js";
 import { mapMutations } from "vuex";
 
 export default {
   data() {
     return {
-      keyList: [],
-      searchKey: "",
-      searchList: [],
+      keyList: [], //搜索历史
+      searchKey: "", //搜索框中数据
+      searchList: [], //查询出来的数据列表
+      keySuggest: [], //搜索建议
+      suggestShow: false,
     };
   },
   mounted() {
     // 渲染时用localStorage中的值
     this.keyList = JSON.parse(localStorage.getItem("keyList")) || [];
   },
+  // watch: {
+  //   searchKey() {
+  //     this.suggestShow = true;
+  //   },
+  // },
   methods: {
+    zhix() {
+      this.suggestShow = true;
+    },
+    zhix1() {
+      this.suggestShow = false;
+      this.searchKey = "";
+      this.keySuggest = [];
+    },
     async saveKey() {
       if (this.searchKey != "") {
         this.keyList.unshift(this.searchKey);
@@ -78,7 +104,16 @@ export default {
         console.log(res);
         this.searchList = res.data.result.songs;
         this.searchKey = "";
+
+        this.$refs.input.blur();
+        this.keySuggest = [];
       }
+    },
+    searchSuggest(item) {
+      console.log(111);
+      console.log(item);
+      this.searchKey = item;
+      this.saveKey();
     },
     delHistory() {
       localStorage.removeItem("keyList");
@@ -96,7 +131,18 @@ export default {
       console.log(res);
       this.searchList = res.data.result.songs;
       console.log(this.searchList);
+      this.suggestShow = false;
     }, 300),
+    // 节流 搜索框联想
+    inputFn: _debounce(async function (e) {
+      console.log(e.target.value);
+      let res = await getSearchSuggest(e.target.value);
+      console.log(res);
+      if (res.data.code === 200) {
+        this.keySuggest = res.data.result.allMatch;
+        console.log(this.keySuggest);
+      }
+    }, 1000),
     updateindex(item) {
       item.al = item.album;
       item.al.picUrl = item.album.artist.img1v1Url;
@@ -123,6 +169,27 @@ export default {
       border-bottom: 1px solid #999;
       width: 90%;
       padding: 0.1rem;
+    }
+  }
+  .searchKeyShow {
+    width: 80%;
+    height: 10rem;
+    margin: auto;
+    // background: rgba(0, 0, 0, 0.3);
+    .suggest {
+      width: 100%;
+      height: 0.8rem;
+      line-height: 0.8rem;
+      border-bottom: 0.02rem solid #999;
+      color: #999;
+      font-size: 0.3rem;
+      .icon {
+        width: 1em;
+        height: 1em;
+        vertical-align: -0.15em;
+        fill: currentColor;
+        overflow: hidden;
+      }
     }
   }
   .searchHistory {

@@ -27,6 +27,7 @@
 <script>
 import { mapState } from "vuex";
 import { getLoginout, getLoginUser } from "@/request/api/home.js";
+import { nextTick } from "vue";
 export default {
   computed: {
     ...mapState(["user"]),

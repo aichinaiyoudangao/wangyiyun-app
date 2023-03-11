@@ -35,6 +35,13 @@ export function getSearchMusic (data) {
     url: `/search?keywords= ${data}`
   })
 }
+// 搜索建议
+export function getSearchSuggest (data) {
+  return service({
+    method: "GET",
+    url: `/search/suggest?keywords= ${data}&type=mobile`
+  })
+}
 // 手机号登录 /login/cellphone?phone=xxx&password=yyy
 export function getLogin (data) {
   return service({

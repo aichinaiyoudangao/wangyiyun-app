@@ -56,22 +56,6 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "Register" */ '../views/Register.vue')
   },
-  {
-    path: '/Video',
-    name: 'Video',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "Video" */ '../views/Video.vue')
-  },
-  {
-    path: '/Comment',
-    name: 'Comment',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "Comment" */ '../views/Comment.vue')
-  },
 ]
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
