@@ -6,7 +6,7 @@
     <img src="@/assets/logo.webp" alt="" class="logo">
     <div class="content">
       <van-cell-group inset>
-        <van-field v-model="phone" type="phone" label="手机号" placeholder="请输入手机号" autocomplete='off' />
+        <van-field v-model="phone" type="phone" label="邮箱" placeholder="请输入邮箱" autocomplete='off' />
         <van-field v-model="password" type="password" label="密码" placeholder="请输入密码" />
       </van-cell-group>
     </div>
